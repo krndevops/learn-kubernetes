@@ -4,9 +4,61 @@ metadata:
   name: frontend
 spec:
   containers:
-    - name: nginx
+    - name: frontend
       image: krn010/frontend
-      ports:
-        - containerPort: 80
-          hostPort: 10000
 
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: catalogue
+spec:
+  containers:
+    - name: catalogue
+      image: krn010/catalogue
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: user
+spec:
+  containers:
+    - name: user
+      image: krn010/user
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: cart
+spec:
+  containers:
+    - name: cart
+      image: krn010/cart
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: payment
+spec:
+  containers:
+    - name: payment
+      image: krn010/payment
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: shipping
+spec:
+  containers:
+    - name: shipping
+      image: krn010/shipping
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dispatch
+spec:
+  containers:
+    - name: dispatch
+      image: krn010/dispatch
