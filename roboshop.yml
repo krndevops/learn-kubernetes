@@ -5,9 +5,9 @@ metadata:
 spec:
   containers:
     - name: frontend
-      image: krn010/frontend
+      image: docker.io/krn010/frontend
 
-
+---
 
 apiVersion: v1
 kind: Pod
@@ -16,8 +16,8 @@ metadata:
 spec:
   containers:
     - name: catalogue
-      image: krn010/catalogue
-
+      image: docker.io/krn010/catalogue
+---
 apiVersion: v1
 kind: Pod
 metadata:
@@ -25,8 +25,8 @@ metadata:
 spec:
   containers:
     - name: user
-      image: krn010/user
-
+      image: docker.io/krn010/user
+---
 apiVersion: v1
 kind: Pod
 metadata:
@@ -34,8 +34,8 @@ metadata:
 spec:
   containers:
     - name: cart
-      image: krn010/cart
-
+      image: docker.io/krn010/cart
+---
 apiVersion: v1
 kind: Pod
 metadata:
@@ -43,8 +43,8 @@ metadata:
 spec:
   containers:
     - name: payment
-      image: krn010/payment
-
+      image: docker.io/krn010/payment
+---
 apiVersion: v1
 kind: Pod
 metadata:
@@ -52,8 +52,8 @@ metadata:
 spec:
   containers:
     - name: shipping
-      image: krn010/shipping
-
+      image: docker.io/krn010/shipping
+---
 apiVersion: v1
 kind: Pod
 metadata:
@@ -61,4 +61,4 @@ metadata:
 spec:
   containers:
     - name: dispatch
-      image: krn010/dispatch
+      image: docker.io/krn010/dispatch
