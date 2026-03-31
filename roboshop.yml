@@ -6,4 +6,7 @@ spec:
   containers:
     - name: nginx
       image: krn010/frontend
+      ports:
+        - containerPort: 80
+          hostPort: 10000
 
