@@ -15,7 +15,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: demo
-  data:
+data:
     URL: google.com
     URL1: google.com
 
@@ -29,5 +29,5 @@ spec:
     - name: nginx
       image: nginx
       envFrom:
-        - configMapRef:
-            name: demo
+            - configMapRef:
+                name: demo
