@@ -9,3 +9,25 @@ spec:
       env:
         - name: URL
           value: google.com
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: demo
+  data:
+    URL: google.com
+    URL1: google.com
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod2
+spec:
+  containers:
+    - name: nginx
+      image: nginx
+      envFrom:
+        - configMapRef:
+            name: demo
