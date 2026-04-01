@@ -20,7 +20,7 @@ spec:
       imagePullPolicy: Always
       env:
         - name: PARAMS
-          value: "dev.roboshop.docdb.endpoint,dev.roboshop.docdb.username,dev.roboshop.docdb.password"
+          value: "dev.roboshop.docdb.endpoint dev.roboshop.docdb.username dev.roboshop.docdb.password"
   containers:
     - name: catalogue
       image: docker.io/krn010/catalogue
