@@ -21,9 +21,9 @@ spec:
       volumeMounts:
         - mountPath: /parameters
           name: parameters
-      env:
-        - name: PARAMS
-          value: "dev.roboshop.catalogue.MONGO_URL,MONGO_URL"
+        env:
+          - name: PARAMS
+            value: "dev.roboshop.catalogue.MONGO_URL,MONGO_URL"
   containers:
     - name: catalogue
       image: docker.io/krn010/catalogue
