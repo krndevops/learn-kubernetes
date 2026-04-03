@@ -23,7 +23,7 @@ spec:
           name: parameters
       env:
         - name: PARAMS
-          value: "dev.roboshop.docdb.endpoint,DOCDB_ENDPOINT dev.roboshop.docdb.username,DOCDB_USER dev.roboshop.docdb.password,DOCDB_PASSWORD"
+          value: "dev.roboshop.catalogue.MONGO_URL,MONGO_URL"
   containers:
     - name: catalogue
       image: docker.io/krn010/catalogue
