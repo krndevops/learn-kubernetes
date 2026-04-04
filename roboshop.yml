@@ -187,6 +187,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: frontend
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: frontend-dev.rdevopsb73.online
 spec:
   ingressClassName: nginx
   rules:
