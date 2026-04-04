@@ -28,9 +28,9 @@ spec:
     - name: catalogue
       image: docker.io/krn010/catalogue
       imagePullPolicy: Always
-        volumeMounts:
-            - mountPath: /parameters
-              name: parameters
+      volumeMounts:
+         - mountPath: /parameters
+           name: parameters
         volumes:
           - name: parameters
             emptyDir: {}
