@@ -188,7 +188,7 @@ kind: Ingress
 metadata:
   name: frontend
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: frontend-dev.rdevopsb73.online
+    external-dns.alpha.kubernetes.io/hostname: frontend-dev.kdevops.online
 spec:
   ingressClassName: nginx
   rules:
