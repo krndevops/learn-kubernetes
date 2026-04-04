@@ -103,7 +103,7 @@ kind: Service
 metadata:
   name: frontend
 spec:
-  type: LoadBalancer
+  #type: LoadBalancer # We prefer to use ingress controllers due to its advantages of multiple dns records
   selector:
     app: frontend
   ports:
