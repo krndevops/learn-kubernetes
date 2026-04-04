@@ -31,7 +31,7 @@ spec:
       volumeMounts:
          - mountPath: /parameters
            name: parameters
-        volumes:
+         volumes:
           - name: parameters
             emptyDir: {}
 
