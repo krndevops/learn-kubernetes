@@ -8,6 +8,7 @@ spec:
   containers:
     - name: frontend
       image: docker.io/krn010/frontend
+      imagePullPolicy: Always
 
 ---
 
