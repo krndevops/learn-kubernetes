@@ -182,6 +182,42 @@ spec:
   volumes:
     - name: parameters
       emptyDir: {}
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: shipping-schema-load
+spec:
+  backoffLimit: 4
+  template:
+    spec:
+      restartPolicy: Never
+      volumes:
+        - name: parameters
+          emptyDir: {}
+      initContainers:
+        - name: parameters-pull
+          image: docker.io/krn010/parameter-store-init-container-image
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /parameters
+              name: parameters
+          env:
+            - name: PARAMS
+              value: "dev.roboshop.rds.endpoint,DB_HOST dev.roboshop.rds.username,DB_USER dev.roboshop.rds.password,DB_PASS"
+      containers:
+        - name: schema-load
+          image: docker.io/krn010/schema-loader
+          imagePullPolicy: Always
+          env:
+            - name: COMPONENT
+              value: shipping
+            - name: SCHEMA_TYPE
+              value: mysql
+          volumeMounts:
+            - mountPath: /parameters
+              name: parameters
 ---
 apiVersion: v1
 kind: Pod
