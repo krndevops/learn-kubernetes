@@ -100,7 +100,7 @@ spec:
           value: "dev.roboshop.user.MONGO_URL,MONGO_URL dev.roboshop.user.REDIS_HOST,REDIS_HOST"
 
   containers:
-    - name: catalogue
+    - name: user
       image: docker.io/krn010/user
       imagePullPolicy: Always
       volumeMounts:
