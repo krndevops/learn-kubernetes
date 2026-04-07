@@ -43,6 +43,44 @@ spec:
       emptyDir: {}
 
 ---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: catalogue-schema-load
+spec:
+  backoffLimit: 4
+  template:
+    spec:
+      restartPolicy: Never
+      volumes:
+        - name: parameters
+          emptyDir: {}
+      initContainers:
+        - name: parameters-pull
+          image: docker.io/krn010/parameter-store-init-container-image
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /parameters
+              name: parameters
+          env:
+            - name: PARAMS
+              value: "dev.roboshop.docdb.username,DOCDB_USER dev.roboshop.docdb.password,DOCDB_PASS dev.roboshop.docdb.endpoint,DOCDB_ENDPOINT"
+      containers:
+        - name: schema-load
+          image: docker.io/krn010/schema-loader
+          imagePullPolicy: Always
+          env:
+            - name: COMPONENT
+              value: catalogue
+            - name: SCHEMA_TYPE
+              value: mongo
+          volumeMounts:
+            - mountPath: /parameters
+              name: parameters
+
+
+
+---
 apiVersion: v1
 kind: Pod
 metadata:
@@ -203,3 +241,6 @@ spec:
                 name: frontend
                 port:
                   number: 80
+
+
+
