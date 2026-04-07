@@ -110,6 +110,7 @@ spec:
   volumes:
     - name: parameters
       emptyDir: {}
+
 ---
 apiVersion: v1
 kind: Pod
@@ -118,9 +119,28 @@ metadata:
   labels:
     app: cart
 spec:
+  initContainers:
+    - name: parameters-pull
+      image: docker.io/krn010/parameter-store-init-container-image
+      imagePullPolicy: Always
+      volumeMounts:
+        - mountPath: /parameters
+          name: parameters
+      env:
+        - name: PARAMS
+          value: "dev.roboshop.cart.REDIS_HOST,REDIS_HOST dev.roboshop.cart.CATALOGUE_HOST,CATALOGUE_HOST dev.roboshop.cart.CATALOGUE_PORT,CATALOGUE_PORT"
+
   containers:
     - name: cart
       image: docker.io/krn010/cart
+      imagePullPolicy: Always
+      volumeMounts:
+        - mountPath: /parameters
+          name: parameters
+
+  volumes:
+    - name: parameters
+      emptyDir: {}
 ---
 apiVersion: v1
 kind: Pod
