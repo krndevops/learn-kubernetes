@@ -158,7 +158,7 @@ spec:
           name: parameters
       env:
         - name: PARAMS
-          value: "dev.roboshop.shipping.CART_ENDPOINT,CART_ENDPOINT dev.roboshop.shipping.DB_HOST,DB_HOST"
+          value: "dev.roboshop.payment.CART_HOST,CART_HOST dev.roboshop.payment.CART_PORT,CART_PORT dev.roboshop.payment.USER_HOST,USER_HOST dev.roboshop.payment.USER_PORT,USER_PORT dev.roboshop.payment.AMQP_HOST,AMQP_HOST dev.roboshop.payment.AMQP_USER,AMQP_USER dev.roboshop.payment.AMQP_PASS,AMQP_PASS"
 
   containers:
     - name: payment
