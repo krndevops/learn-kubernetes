@@ -110,7 +110,6 @@ spec:
   volumes:
     - name: parameters
       emptyDir: {}
-
 ---
 apiVersion: v1
 kind: Pod
