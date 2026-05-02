@@ -253,7 +253,12 @@ spec:
           volumeMounts:
             - mountPath: /parameters
               name: parameters
-
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            failureThreshold: 10
+            periodSeconds: 10
       volumes:
         - name: parameters
           emptyDir: {}
