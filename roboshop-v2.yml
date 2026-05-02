@@ -1,0 +1,403 @@
+---
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: frontend
+  labels:
+    app: frontend
+spec:
+  # modify replicas according to your case
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: docker.io/krn010/frontend
+          imagePullPolicy: Always
+---
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: catalogue
+  labels:
+    app: catalogue
+spec:
+  # modify replicas according to your case
+  replicas: 1
+  selector:
+    matchLabels:
+      app: catalogue
+  template:
+    metadata:
+      labels:
+        app: catalogue
+    spec:
+      initContainers:
+        - name: parameters-pull
+          image: docker.io/krn010/parameter-store-init-container-image
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /parameters
+              name: parameters
+          env:
+            - name: PARAMS
+              value: "dev.roboshop.catalogue.MONGO_URL,MONGO_URL"
+      containers:
+        - name: catalogue
+          image: docker.io/krn010/catalogue
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /parameters
+              name: parameters
+
+      volumes:
+        - name: parameters
+          emptyDir: {}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: catalogue-schema-load
+spec:
+  backoffLimit: 4
+  template:
+    spec:
+      restartPolicy: Never
+      volumes:
+        - name: parameters
+          emptyDir: {}
+      initContainers:
+        - name: parameters-pull
+          image: docker.io/krn010/parameter-store-init-container-image
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /parameters
+              name: parameters
+          env:
+            - name: PARAMS
+              value: "dev.roboshop.docdb.username,DOCDB_USER dev.roboshop.docdb.password,DOCDB_PASS dev.roboshop.docdb.endpoint,DOCDB_ENDPOINT"
+      containers:
+        - name: schema-load
+          image: docker.io/krn010/schema-loader
+          imagePullPolicy: Always
+          env:
+            - name: COMPONENT
+              value: catalogue
+            - name: SCHEMA_TYPE
+              value: mongo
+          volumeMounts:
+            - mountPath: /parameters
+              name: parameters
+
+
+
+---
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: user
+  labels:
+    app: user
+spec:
+  # modify replicas according to your case
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user
+  template:
+    metadata:
+      labels:
+        app: user
+    spec:
+      initContainers:
+        - name: parameters-pull
+          image: docker.io/krn010/parameter-store-init-container-image
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /parameters
+              name: parameters
+          env:
+            - name: PARAMS
+              value: "dev.roboshop.user.MONGO_URL,MONGO_URL dev.roboshop.user.REDIS_HOST,REDIS_HOST"
+      containers:
+        - name: user
+          image: docker.io/krn010/user
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /parameters
+              name: parameters
+
+      volumes:
+        - name: parameters
+          emptyDir: {}
+---
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: cart
+  labels:
+    app: cart
+spec:
+  # modify replicas according to your case
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cart
+  template:
+    metadata:
+      labels:
+        app: cart
+    spec:
+      initContainers:
+        - name: parameters-pull
+          image: docker.io/krn010/parameter-store-init-container-image
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /parameters
+              name: parameters
+          env:
+            - name: PARAMS
+              value: "dev.roboshop.cart.REDIS_HOST,REDIS_HOST dev.roboshop.cart.CATALOGUE_HOST,CATALOGUE_HOST dev.roboshop.cart.CATALOGUE_PORT,CATALOGUE_PORT"
+
+      containers:
+        - name: cart
+          image: docker.io/krn010/cart
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /parameters
+              name: parameters
+
+      volumes:
+        - name: parameters
+          emptyDir: {}
+
+---
+
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: payment
+  labels:
+    app: payment
+spec:
+  # modify replicas according to your case
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payment
+  template:
+    metadata:
+      labels:
+        app: payment
+    spec:
+      initContainers:
+        - name: parameters-pull
+          image: docker.io/rkalluru/d77-parameter-store-init-container-image
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /parameters
+              name: parameters
+          env:
+            - name: PARAMS
+              value: "dev.roboshop.payment.CART_HOST,CART_HOST dev.roboshop.payment.CART_PORT,CART_PORT dev.roboshop.payment.USER_HOST,USER_HOST dev.roboshop.payment.USER_PORT,USER_PORT dev.roboshop.payment.AMQP_HOST,AMQP_HOST dev.roboshop.payment.AMQP_USER,AMQP_USER dev.roboshop.payment.AMQP_PASS,AMQP_PASS"
+      containers:
+        - name: payment
+          image: rkalluru/d77-payment
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /parameters
+              name: parameters
+      volumes:
+        - name: parameters
+          emptyDir: {}
+
+---
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: shipping
+  labels:
+    app: shipping
+spec:
+  # modify replicas according to your case
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shipping
+  template:
+    metadata:
+      labels:
+        app: shipping
+    spec:
+      initContainers:
+        - name: parameters-pull
+          image: docker.io/krn010/parameter-store-init-container-image
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /parameters
+              name: parameters
+          env:
+            - name: PARAMS
+              value: "dev.roboshop.shipping.CART_ENDPOINT,CART_ENDPOINT dev.roboshop.shipping.DB_HOST,DB_HOST"
+
+      containers:
+        - name: shipping
+          image: docker.io/krn010/shipping
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /parameters
+              name: parameters
+
+      volumes:
+        - name: parameters
+          emptyDir: {}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: shipping-schema-load
+spec:
+  backoffLimit: 4
+  template:
+    spec:
+      restartPolicy: Never
+      volumes:
+        - name: parameters
+          emptyDir: {}
+      initContainers:
+        - name: parameters-pull
+          image: docker.io/krn010/parameter-store-init-container-image
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /parameters
+              name: parameters
+          env:
+            - name: PARAMS
+              value: "dev.roboshop.rds.endpoint,DB_HOST dev.roboshop.rds.username,DB_USER dev.roboshop.rds.password,DB_PASS"
+      containers:
+        - name: schema-load
+          image: docker.io/krn010/schema-loader
+          imagePullPolicy: Always
+          env:
+            - name: COMPONENT
+              value: shipping
+            - name: SCHEMA_TYPE
+              value: mysql
+          volumeMounts:
+            - mountPath: /parameters
+              name: parameters
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+spec:
+  #type: LoadBalancer # We prefer to use ingress controllers due to its advantages of multiple dns records
+  selector:
+    app: frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: catalogue
+spec:
+  selector:
+    app: catalogue
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user
+spec:
+  selector:
+    app: user
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cart
+spec:
+  selector:
+    app: cart
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment
+spec:
+  selector:
+    app: payment
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shipping
+spec:
+  selector:
+    app: shipping
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dispatch
+spec:
+  selector:
+    app: dispatch
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: frontend
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: frontend-dev.kdevops.online
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: frontend-dev.kdevops.online
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend
+                port:
+                  number: 80
+
+
+
