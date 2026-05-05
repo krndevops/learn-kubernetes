@@ -274,13 +274,6 @@ spec:
         - name: parameters-pull
           image: docker.io/krn010/parameter-store-init-container-image
           imagePullPolicy: Always
-          resources:
-            requests:
-              memory: "2Gi"
-              cpu: "1000m"
-            limits:
-              memory: "2.5Gi"
-              cpu: "1500m"
           volumeMounts:
             - mountPath: /parameters
               name: parameters
@@ -292,6 +285,13 @@ spec:
         - name: shipping
           image: docker.io/krn010/shipping
           imagePullPolicy: Always
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "1000m"
+            limits:
+              memory: "2.5Gi"
+              cpu: "1500m"
           volumeMounts:
             - mountPath: /parameters
               name: parameters
