@@ -323,6 +323,7 @@ spec:
         target:
           type: Utilization
           averageUtilization: 50
+
 ---
 apiVersion: batch/v1
 kind: Job
